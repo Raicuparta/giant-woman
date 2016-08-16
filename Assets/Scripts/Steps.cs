@@ -2,36 +2,55 @@
 using System.Collections;
 
 public class Steps : MonoBehaviour {
-    public Transform Pelvis; // used to check what direction we're facing
     public float Speed = 20; // foot movement speed
     public float Stride = 10; // step distance
-    public bool Anchored; // if this foot is currently stuck to the ground
-    Rigidbody Body;
+    public bool Anchored; // if the foot is currently stuck to the ground
+    public Steps OtherFoot;
+    Rigidbody Foot;
+    Transform Parent;
+    Vector3 PreviousStep; // position the player was in the previous step
 
 	void Start () {
-        Body = GetComponent<Rigidbody>();
+        Foot = GetComponent<Rigidbody>();
+        // we're gonna change the hierarchy so we need to save the parent
+        Parent = transform.parent;
+        transform.SetParent(null);
         if (Anchored) Anchor();
         else Release();
 	}
 	
 	void FixedUpdate () {
-        if (Anchored) return;
-        transform.Rotate(0, Pelvis.rotation.y, 0);
+        // we only want to move this foot if the other one is currently grounded
+        if (!OtherFoot.Anchored) return;
+        if (Anchored) Release();
+        // this is where we want te foot to be at the end of the step
+        Vector3 target = Parent.position + Parent.forward * Stride;
+        // let's apply a force towards that target position to get the foot there
+        Vector3 force = (target - transform.position).normalized * Speed;
+        Foot.AddForce(force);
+
+        float distance = Vector3.Distance(OtherFoot.transform.position, transform.position);
+        if (distance > 2 * Stride && IsInFront()) Anchor();
 	}
 
+    // true if this foot is in front of the other foot
+    bool IsInFront() {
+        Vector3 heading = OtherFoot.transform.position - transform.position;
+        heading.Normalize();
+        float dot = Vector3.Dot(heading, Parent.forward);
+        return dot < 0;
+    }
+
     void OnTriggerEnter(Collider other) {
-        if (other.tag != "StepLimit") return;
-        Anchor();
-        other.GetComponentInParent<Steps>().Release();
     }
 
     void Anchor () {
-        Body.constraints = RigidbodyConstraints.FreezeAll;
+        Foot.constraints = RigidbodyConstraints.FreezeAll;
         Anchored = true;
     }
 
     public void Release () {
-        Body.constraints =
+        Foot.constraints =
             RigidbodyConstraints.FreezeRotationX |
             RigidbodyConstraints.FreezeRotationZ |
             RigidbodyConstraints.FreezePositionY;
