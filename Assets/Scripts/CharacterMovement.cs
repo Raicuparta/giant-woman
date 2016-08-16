@@ -11,7 +11,7 @@ public class CharacterMovement : MonoBehaviour {
     }
 	
 	public void Move (float h, float v) {
-        Vector3 forwardForce = transform.rotation * Vector3.back * v * MovementSpeed;
+        Vector3 forwardForce = transform.rotation * Vector3.forward * v * MovementSpeed;
         forwardForce = Vector3.ProjectOnPlane(forwardForce, Vector3.up);
         Body.AddForce(forwardForce);
 
