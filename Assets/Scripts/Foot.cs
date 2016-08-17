@@ -10,16 +10,17 @@ public class Foot : MonoBehaviour {
         Body = GetComponent<Rigidbody>();
         MaxDistance = Vector3.Distance(Knee.position, transform.position);
     }
-	
-	void FixedUpdate () {
+
+    void FixedUpdate() {
         // check if there's ground under the foot
         RaycastHit hit;
-        bool intersects = Physics.Raycast(Knee.position, Vector3.down, out hit, MaxDistance);
+        bool intersects = Physics.Raycast(Knee.position, Vector3.down, out hit, MaxDistance * 2, LayerMask.GetMask("Ground"));
         Debug.DrawLine(Knee.position, Knee.position + Vector3.down*10, Color.red);
         if (!intersects) return;
         Debug.Log("yup");
         // move the foot to the ground
-        Body.MoveRotation(Quaternion.LookRotation(transform.forward, hit.normal));
-        Body.MovePosition(new Vector3(Knee.position.x, transform.position.y, Knee.position.z));
+        Vector3 forward = Vector3.Cross(hit.normal, -transform.parent.right).normalized;
+        Body.MoveRotation(Quaternion.LookRotation(forward, hit.normal));
+        Body.MovePosition(hit.point);
 	}
 }

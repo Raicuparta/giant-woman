@@ -32,9 +32,10 @@ public class Knee : MonoBehaviour {
         if (!OtherFoot.Anchored) return;
         if (Anchored) Release();
 
-        // apply a force towards the target position to get the foot there
-        Vector3 force = Util.ForceTowards(transform.position, ComputeTarget(), Speed);
-        Foot.AddForce(force);
+        // Move the foot by changing its velocity.
+        // The velocity needs to be more than twice the parent to make sure the feet
+        // can keep up.
+        Foot.velocity = ParentBody.velocity * 3;
 
         // To calculate the distance between the feet, we use projection so that
         // we only take into account the forward axis
