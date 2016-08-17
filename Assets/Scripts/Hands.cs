@@ -2,9 +2,15 @@
 using System.Collections;
 
 public class Hands : MonoBehaviour {
+    public float Speed = 10;
     public Hand RightHand;
     public Hand LeftHand;
     public Camera GameCamera;
+
+    void Start() {
+        RightHand.Speed = Speed;
+        LeftHand.Speed = Speed;
+    }
 
     public void Grab(bool right, bool left, Vector3 mouse) {
         // Shoot a ray to determine what object was clicked

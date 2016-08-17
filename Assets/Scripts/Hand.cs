@@ -2,11 +2,11 @@
 using System.Collections;
 
 public class Hand : MonoBehaviour {
-    public float Speed = 10;
     Rigidbody Body;
     Rigidbody LastGrabbed;
     Transform LastParent;
     bool Reaching;
+    [HideInInspector] public float Speed = 10;
 
 	void Start () {
         Body = GetComponent<Rigidbody>();
@@ -27,6 +27,8 @@ public class Hand : MonoBehaviour {
         if (!LastGrabbed) return;
         LastGrabbed.transform.SetParent(LastParent);
         LastGrabbed.isKinematic = false;
+        LastGrabbed.useGravity = true;
+        LastGrabbed.AddForce(transform.parent.forward * 30, ForceMode.Impulse);
         LastGrabbed = null;
     }
 

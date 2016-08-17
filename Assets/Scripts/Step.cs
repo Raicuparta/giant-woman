@@ -1,15 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Steps : MonoBehaviour {
-    public float Speed = 20; // foot movement speed
-    public float Stride = 10; // step distance
-    public float Width = 2; // lateral distance between the feet
-    public bool Anchored; // if the foot is currently stuck to the ground
-    public Steps OtherFoot;
+public class Step : MonoBehaviour {
+    [HideInInspector] public float Speed = 20; // foot movement speed
+    [HideInInspector] public float Stride = 10; // step distance
+    [HideInInspector] public float Width = 2; // lateral distance between the feet
+    [HideInInspector] public bool Anchored; // if the foot is currently stuck to the ground
+    [HideInInspector] public Step OtherFoot;
     Rigidbody Foot;
     Transform Parent;
-    Vector3 PreviousStep; // position the player was in the previous step
     int Outwards; // points to the right if this is the right foot, left if left foot
 
 	void Start () {
@@ -58,11 +57,8 @@ public class Steps : MonoBehaviour {
         return dot < 0;
     }
 
-    void OnTriggerEnter(Collider other) {
-    }
-
     void Anchor () {
-        Foot.constraints = ~RigidbodyConstraints.FreezeRotation;
+        Foot.constraints = RigidbodyConstraints.FreezePosition;
         Anchored = true;
     }
 
