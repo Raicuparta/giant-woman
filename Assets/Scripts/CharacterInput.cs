@@ -11,7 +11,7 @@ public class CharacterInput : MonoBehaviour {
         CharacterHands = GetComponent<Hands>();
 	}
 	
-	void Update () {
+	void FixedUpdate () {
         float h = CrossPlatformInputManager.GetAxis("Horizontal");
         float v = CrossPlatformInputManager.GetAxis("Vertical");
         Movement.Move(h, v);

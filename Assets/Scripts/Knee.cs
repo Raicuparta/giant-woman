@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Step : MonoBehaviour {
+public class Knee : MonoBehaviour {
     [HideInInspector] public float Speed = 20; // foot movement speed
     [HideInInspector] public float Stride = 10; // step distance
     [HideInInspector] public float Width = 2; // lateral distance between the feet
     [HideInInspector] public bool Anchored; // if the foot is currently stuck to the ground
-    [HideInInspector] public Step OtherFoot;
+    [HideInInspector] public Knee OtherFoot;
     Rigidbody Foot;
     Transform Parent;
+    Rigidbody ParentBody;
     int Outwards; // points to the right if this is the right foot, left if left foot
     float InitialY;
 
@@ -19,13 +20,14 @@ public class Step : MonoBehaviour {
 
         // we're gonna change the hierarchy so we need to save the parent
         Parent = transform.parent;
+        ParentBody = Parent.GetComponent<Rigidbody>();
         transform.SetParent(null);
 
         if (Anchored) Anchor();
         else Release();
 	}
-	
-	void FixedUpdate () {
+
+	public void Move () {
         // we only want to move this foot if the other one is currently grounded
         if (!OtherFoot.Anchored) return;
         if (Anchored) Release();
@@ -67,7 +69,7 @@ public class Step : MonoBehaviour {
     }
 
     public void Release () {
-        Foot.constraints = RigidbodyConstraints.FreezePositionY;
+        Foot.constraints = RigidbodyConstraints.None;
         Anchored = false;
     }
 }
