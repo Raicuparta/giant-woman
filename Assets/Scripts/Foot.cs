@@ -17,7 +17,6 @@ public class Foot : MonoBehaviour {
         bool intersects = Physics.Raycast(Knee.position, Vector3.down, out hit, MaxDistance * 2, LayerMask.GetMask("Ground"));
         Debug.DrawLine(Knee.position, Knee.position + Vector3.down*10, Color.red);
         if (!intersects) return;
-        Debug.Log("yup");
         // move the foot to the ground
         Vector3 forward = Vector3.Cross(hit.normal, -transform.parent.right).normalized;
         Body.MoveRotation(Quaternion.LookRotation(forward, hit.normal));

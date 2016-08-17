@@ -40,7 +40,7 @@ public class Knee : MonoBehaviour {
         // To calculate the distance between the feet, we use projection so that
         // we only take into account the forward axis
         Vector3 difference = OtherFoot.transform.position - transform.position;
-        difference = Vector3.ProjectOnPlane(difference, Parent.right);
+        //difference = Vector3.ProjectOnPlane(difference, Parent.right);
         float distance = difference.magnitude;
         if (distance > Stride && IsInFront()) Anchor();
 	}
@@ -61,7 +61,8 @@ public class Knee : MonoBehaviour {
         Vector3 heading = OtherFoot.transform.position - transform.position;
         heading.Normalize();
         float dot = Vector3.Dot(heading, Parent.forward);
-        return dot < 0;
+        float vel = Parent.InverseTransformDirection(ParentBody.velocity).z;
+        return vel > 0 ? dot < 0 : dot > 0;
     }
 
     void Anchor () {

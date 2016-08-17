@@ -21,6 +21,6 @@ public class CharacterMovement : MonoBehaviour {
         // use h for y rotation
         Vector3 torque = Vector3.up * h * RotationSpeed;
         Body.AddTorque(torque);
-        if (v != 0) CharacterSteps.Move();
+        CharacterSteps.Move();
     }
 }
