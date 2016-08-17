@@ -10,13 +10,14 @@ public class Step : MonoBehaviour {
     Rigidbody Foot;
     Transform Parent;
     int Outwards; // points to the right if this is the right foot, left if left foot
+    float InitialY;
 
 	void Start () {
         Foot = GetComponent<Rigidbody>();
-        // we're gonna change the hierarchy so we need to save the parent
-
+        InitialY = transform.position.y;
         Outwards = transform.position.x > 0 ? 1 : -1;
 
+        // we're gonna change the hierarchy so we need to save the parent
         Parent = transform.parent;
         transform.SetParent(null);
 
@@ -28,17 +29,9 @@ public class Step : MonoBehaviour {
         // we only want to move this foot if the other one is currently grounded
         if (!OtherFoot.Anchored) return;
         if (Anchored) Release();
-        // this is where we want te foot to be at the end of the step
-        Vector3 target = Parent.position + Parent.forward * Stride;
-        // target position should point a bit outwards
-        target += Parent.right * Outwards * Width;
-        // also a bit above ground
-        target += Vector3.up;
-        Debug.DrawLine(Parent.position, target, Color.red);
-        Debug.DrawLine(Parent.position + Vector3.up, Parent.position + Parent.forward * 10, Color.black);
-        // let's apply a force towards that target position to get the foot there
-        Vector3 force = (target - transform.position).normalized * Speed;
-        Debug.DrawLine(transform.position, transform.position + force, Color.green);
+
+        // apply a force towards the target position to get the foot there
+        Vector3 force = Util.ForceTowards(transform.position, ComputeTarget(), Speed);
         Foot.AddForce(force);
 
         // To calculate the distance between the feet, we use projection so that
@@ -48,6 +41,17 @@ public class Step : MonoBehaviour {
         float distance = difference.magnitude;
         if (distance > Stride && IsInFront()) Anchor();
 	}
+
+    // calculate where we want te foot to be at the end of the step
+    Vector3 ComputeTarget() {
+        Vector3 target = Parent.position + Parent.forward * Stride;
+        // target position should point a bit outwards
+        target += Parent.right * Outwards * Width;
+        // also a bit above ground
+        target.y = InitialY;
+        Debug.DrawLine(Parent.position, target);
+        return target;
+    }
 
     // true if this foot is in front of the other foot
     bool IsInFront() {
