@@ -45,16 +45,15 @@ public class Knee : MonoBehaviour {
             Anchor();
             OtherFoot.Release();
         }
-	}
+    }
 
     bool ShouldAnchor() {
         Vector3 difference = OtherFoot.transform.position - transform.position;
         //difference = Vector3.ProjectOnPlane(difference, Parent.right);
         float distance = difference.magnitude;
-        bool result = distance > Stride && IsInFront();
-        bool iss = Util.IsInFront(transform.position, Parent.position, Parent.right * -Outwards);
-        result = result || iss;
-        return result;
+        bool result = distance > Stride ||
+            Util.IsInFront(transform.position, Parent.position, Parent.right * -Outwards);
+        return result && IsInFront();
     }
 
     // calculate where we want te foot to be at the end of the step
