@@ -7,8 +7,8 @@ public class Util {
     }
 
     // checks if a is in front of b, in the forward direction
-    public static bool IsInFront(Transform a, Transform b, Vector3 forward) {
-        Vector3 heading = b.position - a.position;
+    public static bool IsInFront(Vector3 a, Vector3 b, Vector3 forward) {
+        Vector3 heading = b - a;
         heading.Normalize();
         float dot = Vector3.Dot(heading, forward);
         return dot < 0;
