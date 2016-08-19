@@ -22,9 +22,9 @@ public class CharacterMovement : MonoBehaviour {
         Body.AddForce(forwardForce);
 
         // use h for y rotation
-        Vector3 torque = Vector3.up * h * RotationSpeed;
-        Body.AddTorque(torque);
-        CharacterSteps.Move();
+        /*Vector3 torque = Vector3.up * h * RotationSpeed;
+        Body.AddTorque(torque);*/
+        CharacterSteps.Move(h * RotationSpeed);
     }
 
     public void ChargeJump() {

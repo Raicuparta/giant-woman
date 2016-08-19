@@ -25,8 +25,15 @@ public class Steps : MonoBehaviour {
         LeftFoot.Knee = LeftKnee.transform;
     }
 
-    public void Move() {
+    public void Move(float h) {
         RightKnee.Move();
         LeftKnee.Move();
+
+        Transform foot = RightKnee.Anchored ? RightFoot.transform : LeftFoot.transform;
+
+        Rigidbody Body = transform.GetComponent<Rigidbody>();
+        Quaternion q = Quaternion.AngleAxis(h, Vector3.up);
+        Body.MovePosition(q * (Body.transform.position - foot.position) + foot.position);
+        Body.MoveRotation(Body.transform.rotation * q);
     }
 }
