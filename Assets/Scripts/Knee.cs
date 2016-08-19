@@ -16,7 +16,7 @@ public class Knee : MonoBehaviour {
 	void Start () {
         Foot = GetComponent<Rigidbody>();
         InitialY = transform.position.y;
-        Outwards = transform.position.x > 0 ? 1 : -1;
+        Outwards = transform.position.x > 0 ? -1 : 1;
 
         // we're gonna change the hierarchy so we need to save the parent
         Parent = transform.parent;
@@ -32,11 +32,15 @@ public class Knee : MonoBehaviour {
         if (!OtherFoot.Anchored) return;
         if (Anchored) Release();
 
-        // Move the foot by changing its velocity.
+        // Move the foot by applying a force towards the target
+        float intensity = ComputeForwardVelocity().magnitude * Speed;
+        Vector3 force = Util.ForceTowards(transform.position, ComputeTarget(), intensity);
+        Foot.AddForce(force);
         // The velocity needs to be more than twice the parent to make sure the feet
         // can keep up.
-        Foot.velocity = ParentBody.velocity * 3;
-
+        //Foot.velocity.Normalize();
+        //Foot.velocity *= ParentBody.velocity.magnitude;
+        
         // To calculate the distance between the feet, we use projection so that
         // we only take into account the forward axis
         Vector3 difference = OtherFoot.transform.position - transform.position;
@@ -47,7 +51,7 @@ public class Knee : MonoBehaviour {
 
     // calculate where we want te foot to be at the end of the step
     Vector3 ComputeTarget() {
-        Vector3 target = Parent.position + Parent.forward * Stride;
+        Vector3 target = Parent.position + ComputeForward() * Stride;
         // target position should point a bit outwards
         target += Parent.right * Outwards * Width;
         // also a bit above ground
@@ -56,13 +60,21 @@ public class Knee : MonoBehaviour {
         return target;
     }
 
+    Vector3 ComputeForward() {
+        return ComputeForwardVelocity().normalized;
+    }
+
+    Vector3 ComputeForwardVelocity() {
+        Vector3 velocity = ParentBody.velocity;
+        return Vector3.ProjectOnPlane(velocity, Parent.up);
+    }
+
     // true if this foot is in front of the other foot
     bool IsInFront() {
         Vector3 heading = OtherFoot.transform.position - transform.position;
         heading.Normalize();
-        float dot = Vector3.Dot(heading, Parent.forward);
-        float vel = Parent.InverseTransformDirection(ParentBody.velocity).z;
-        return vel > 0 ? dot < 0 : dot > 0;
+        float dot = Vector3.Dot(heading, ComputeForward());
+        return dot < 0;
     }
 
     void Anchor () {
