@@ -1,7 +1,9 @@
 fileFormatVersion: 2
-guid: ccb03b4f2c3d15840aab46a39759fe6d
-timeCreated: 1471138112
-licenseType: Free
+guid: 9cf3de838bee8f64bbebae3f8638d20b
+labels:
+- material
+timeCreated: 1437911315
+licenseType: Store
 NativeFormatImporter:
   userData: 
   assetBundleName: 
