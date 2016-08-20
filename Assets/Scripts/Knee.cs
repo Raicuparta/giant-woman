@@ -51,8 +51,8 @@ public class Knee : MonoBehaviour {
         Vector3 difference = OtherFoot.transform.position - transform.position;
         //difference = Vector3.ProjectOnPlane(difference, Parent.right);
         float distance = difference.magnitude;
-        bool result = distance > Stride ||
-            Util.IsInFront(transform.position, Parent.position, Parent.right * -Outwards);
+        bool result = distance > Stride/* ||
+            Util.IsInFront(transform.position, Parent.position, Parent.right * -Outwards)*/;
         return result && IsInFront();
     }
 
