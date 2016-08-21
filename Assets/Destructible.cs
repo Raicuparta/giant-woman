@@ -14,7 +14,7 @@ public class Destructible : MonoBehaviour {
     }
 
     void OnCollisionEnter(Collision col) {
-        if (col.gameObject.layer != 9) return;
+        if (col.gameObject.layer == 11) return;
 
         GetComponent<MeshCollider>().enabled = false;
         GetComponent<MeshRenderer>().enabled = false;

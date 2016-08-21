@@ -14,7 +14,7 @@ public class Foot : MonoBehaviour {
     void FixedUpdate() {
         // check if there's ground under the foot
         RaycastHit hit;
-        bool intersects = Physics.Raycast(Knee.position, Vector3.down, out hit, MaxDistance * 2, LayerMask.GetMask("Ground"));
+        bool intersects = Physics.Raycast(Knee.position, Vector3.down, out hit, MaxDistance, LayerMask.GetMask("Ground"));
         Debug.DrawLine(Knee.position, Knee.position + Vector3.down*10, Color.red);
         if (!intersects) return;
         // move the foot to the ground

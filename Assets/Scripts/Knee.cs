@@ -10,6 +10,7 @@ public class Knee : MonoBehaviour {
     Rigidbody Foot;
     Transform Parent;
     Rigidbody ParentBody;
+    AudioSource StepSound;
     int Outwards; // points to the right if this is the right foot, left if left foot
     float InitialY;
 
@@ -21,6 +22,7 @@ public class Knee : MonoBehaviour {
         // we're gonna change the hierarchy so we need to save the parent
         Parent = transform.parent;
         ParentBody = Parent.GetComponent<Rigidbody>();
+        StepSound = Parent.GetComponent<AudioSource>();
         transform.SetParent(null);
 
         if (Anchored) Anchor();
@@ -82,8 +84,11 @@ public class Knee : MonoBehaviour {
     }
 
     void Anchor () {
-        Foot.constraints = RigidbodyConstraints.FreezePosition;
+        Foot.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
         Anchored = true;
+        float pitchDelta = Random.Range(0.8f, 1.2f);
+        StepSound.pitch = pitchDelta;
+        StepSound.Play();
     }
 
     public void Release () {

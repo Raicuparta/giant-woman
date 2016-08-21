@@ -22,8 +22,8 @@ public class CharacterInput : MonoBehaviour {
 
         Vector3 mouse = CrossPlatformInputManager.mousePosition;
         CharacterHands.Grab(right, left, mouse);
-
-        bool jump = CrossPlatformInputManager.GetButton("Jump");
-        if (jump) Movement.ChargeJump();
+        
+        if (CrossPlatformInputManager.GetButtonDown("Jump")) Movement.ChargeJump();
+        if (CrossPlatformInputManager.GetButtonUp("Jump")) Movement.Jump();
     }
 }

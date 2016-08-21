@@ -4,15 +4,19 @@ using System.Collections;
 public class CharacterMovement : MonoBehaviour {
     Rigidbody Body;
     Steps CharacterSteps;
+    SphereCollider ColliderBase;
+    float DefaultBaseY;
     public float MovementSpeed = 10; // character movement speed multiplier
     public float RotationSpeed = 10; // character rotation speed multiplier
-    public float JumpChargeHeight = 3; // how much the body is lowered when chargind a jump
-    public float JumpChargeSpeed = 10; // how fast the body is lowered when chargind a jump
+    public float JumpChargeHeight = 1; // how much the body is lowered when chargind a jump
+    public float JumpStrength = 10; // how fast the body is lowered when chargind a jump
 
     void Start() {
         Body = GetComponent<Rigidbody>();
         Body.centerOfMass = -transform.up * 5;
         CharacterSteps = GetComponent<Steps>();
+        ColliderBase = GetComponent<SphereCollider>();
+        DefaultBaseY = ColliderBase.center.y;
     }
 	
 	public void Move(float h, float v) {
@@ -28,8 +32,12 @@ public class CharacterMovement : MonoBehaviour {
     }
 
     public void ChargeJump() {
-        Vector3 target = transform.position - transform.up * JumpChargeHeight;
-        Vector3 force = Util.ForceTowards(transform.position, target, JumpChargeSpeed);
-        Body.AddForce(force);
+        ColliderBase.center = Vector3.up * (DefaultBaseY + JumpChargeHeight);
+    }
+
+    public void Jump() {
+        ColliderBase.center = Vector3.up * DefaultBaseY;
+        Vector3 force = transform.up * JumpStrength;
+        Body.AddForce(force, ForceMode.Impulse);
     }
 }

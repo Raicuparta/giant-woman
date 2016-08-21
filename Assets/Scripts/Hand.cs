@@ -33,7 +33,7 @@ public class Hand : MonoBehaviour {
     }
 
     public void Grab(Rigidbody grabbedBody) {
-        if (LastGrabbed) return;
+        if (LastGrabbed || !grabbedBody) return;
         LastGrabbed = grabbedBody;
         grabbedBody.isKinematic = true;
         grabbedBody.position = transform.position;
