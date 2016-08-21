@@ -10,10 +10,11 @@ public class CharacterMovement : MonoBehaviour {
     public float RotationSpeed = 10; // character rotation speed multiplier
     public float JumpChargeHeight = 1; // how much the body is lowered when chargind a jump
     public float JumpStrength = 10; // how fast the body is lowered when chargind a jump
+    public float CenterOfMassY = -3; // how low the center of mass is
 
     void Start() {
         Body = GetComponent<Rigidbody>();
-        Body.centerOfMass = -transform.up * 5;
+        Body.centerOfMass = transform.up * CenterOfMassY;
         CharacterSteps = GetComponent<Steps>();
         ColliderBase = GetComponent<SphereCollider>();
         DefaultBaseY = ColliderBase.center.y;
@@ -26,8 +27,8 @@ public class CharacterMovement : MonoBehaviour {
         Body.AddForce(forwardForce);
 
         // use h for y rotation
-        /*Vector3 torque = Vector3.up * h * RotationSpeed;
-        Body.AddTorque(torque);*/
+        Vector3 torque = Vector3.up * h * RotationSpeed;
+        Body.AddTorque(torque);
         CharacterSteps.Move(h * RotationSpeed);
     }
 

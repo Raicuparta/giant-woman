@@ -19,10 +19,13 @@ public class CharacterInput : MonoBehaviour {
 
         bool left = CrossPlatformInputManager.GetButton("LB");
         bool right = CrossPlatformInputManager.GetButton("RB");
-
         Vector3 mouse = CrossPlatformInputManager.mousePosition;
         CharacterHands.Grab(right, left, mouse);
-        
+
+        bool leftPress = CrossPlatformInputManager.GetButtonDown("LB");
+        bool rightPress = CrossPlatformInputManager.GetButtonDown("RB");
+        CharacterHands.Press(rightPress, leftPress);
+
         if (CrossPlatformInputManager.GetButtonDown("Jump")) Movement.ChargeJump();
         if (CrossPlatformInputManager.GetButtonUp("Jump")) Movement.Jump();
     }

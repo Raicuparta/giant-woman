@@ -29,10 +29,7 @@ public class CameraController : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        if (target == null) {
-            return;
-        }
-
+        if (target == null) return;
         UpdateCameraClipPoints(transform.position, transform.rotation, ref adjustedCameraClipPoints);
         UpdateCameraClipPoints(position, transform.rotation, ref desiredCameraClipPoints);
 
@@ -47,13 +44,13 @@ public class CameraController : MonoBehaviour {
 
         position = target.position;
         if (cameraBack)
-            position += Quaternion.Euler(target.eulerAngles.x, target.eulerAngles.y, 0) * new Vector3(0, Height, -Distance * (float)carDirection);
+            position += Quaternion.Euler(0, target.eulerAngles.y, 0) * new Vector3(0, Height, -Distance * (float)carDirection);
         else
-            position += Quaternion.Euler(target.eulerAngles.x, target.eulerAngles.y, 0) * new Vector3(0, Height, -Distance * (float)-carDirection);
+            position += Quaternion.Euler(0, target.eulerAngles.y, 0) * new Vector3(0, Height, -Distance * (float)-carDirection);
 
         if (colliding) {
             ajustedDestination = target.position;
-            ajustedDestination += Quaternion.Euler(target.eulerAngles.x, target.eulerAngles.y, 0) * new Vector3(0, Height + 2, -adjustmentDistance);
+            ajustedDestination += Quaternion.Euler(0, target.eulerAngles.y, 0) * new Vector3(0, Height + 2, -adjustmentDistance);
             transform.position = Vector3.SmoothDamp(transform.position, ajustedDestination, ref camVel, SmoothTime);
         } else {
             transform.position = Vector3.SmoothDamp(transform.position, position, ref camVel, SmoothTime);
