@@ -5,9 +5,11 @@ public class Hands : MonoBehaviour {
     public float Speed = 10;
     public float MinGrabHeight = 3; // maximum height difference between player and grabbed object
     public float LoweringSpeed = 2; // speed at which the body rotates when grabbing low objects
+    public float MaxGrabDistance = 100;
     public Hand RightHand;
     public Hand LeftHand;
     public Camera GameCamera;
+    public LayerMask GrabbableLayers;
     Rigidbody ParentBody;
 
     void Start() {
@@ -16,18 +18,22 @@ public class Hands : MonoBehaviour {
         ParentBody = GetComponent<Rigidbody>();
     }
 
-    public void Grab(bool right, bool left, Vector3 mouse) {
-        // Shoot a ray to determine what object was clicked
+    // convert mouse coordinate to 3D world coordinates
+    Vector3 MouseToWorld(Vector3 mouse) {
         Ray ray = GameCamera.ScreenPointToRay(mouse);
         RaycastHit hitInfo;
-        bool hit = Physics.Raycast(ray, out hitInfo);
-        if (!hit) return;
-        Vector3 point = hitInfo.point;
+        bool hit = Physics.Raycast(ray, out hitInfo, MaxGrabDistance, GrabbableLayers.value);
+        Debug.DrawLine(transform.position, hitInfo.point, Color.blue);
+        return hitInfo.point;
+    }
+
+    public void Grab(bool right, bool left, Vector3 mouse) {
+        Vector3 point = MouseToWorld(mouse);
         // Grab that object
         if (right) RightHand.Reach(point);
-        //else RightHand.LetGo();
+        else RightHand.StopReaching();
         if (left) LeftHand.Reach(point);
-        //else LeftHand.LetGo();
+        else LeftHand.StopReaching();
 
         if (!right && !left) return;
 
@@ -40,8 +46,9 @@ public class Hands : MonoBehaviour {
         }
     }
 
-    public void Press(bool right, bool left) {
-        if (right) RightHand.LetGo();
-        if (left) LeftHand.LetGo();
+    public void Press(bool right, bool left, Vector3 mouse) {
+        Vector3 target = MouseToWorld(mouse);
+        if (right) RightHand.ThrowTowards(target);
+        if (left) LeftHand.ThrowTowards(target);
     }
 }

@@ -24,7 +24,7 @@ public class CharacterInput : MonoBehaviour {
 
         bool leftPress = CrossPlatformInputManager.GetButtonDown("LB");
         bool rightPress = CrossPlatformInputManager.GetButtonDown("RB");
-        CharacterHands.Press(rightPress, leftPress);
+        CharacterHands.Press(rightPress, leftPress, mouse);
 
         if (CrossPlatformInputManager.GetButtonDown("Jump")) Movement.ChargeJump();
         if (CrossPlatformInputManager.GetButtonUp("Jump")) Movement.Jump();

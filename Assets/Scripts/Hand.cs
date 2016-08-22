@@ -5,10 +5,11 @@ public class Hand : MonoBehaviour {
     Rigidbody Body;
     Rigidbody LastGrabbed;
     Transform LastParent;
+    int LastLayer;
     bool Reaching;
     [HideInInspector] public float Speed = 10;
-
-	void Start () {
+    [HideInInspector] public float ThrowStrenght = 30;
+    void Start () {
         Body = GetComponent<Rigidbody>();
 	}
 
@@ -20,21 +21,30 @@ public class Hand : MonoBehaviour {
     public void Reach(Vector3 point) {
         if (LastGrabbed) return;
         if (!Reaching) Reaching = true;
-        Body.AddForce((point - transform.position).normalized * Speed);
+        Body.velocity = (point - transform.position).normalized * Speed;
+        //Body.AddForce((point - transform.position).normalized * Speed);
     }
 
-    public void LetGo() {
+    public void ThrowTowards(Vector3 target) {
         if (Reaching) Reaching = false;
         if (!LastGrabbed) return;
         Destroy(LastGrabbed.GetComponent<FixedJoint>());
-        LastGrabbed.AddForce(transform.parent.forward * 30, ForceMode.Impulse);
+        Vector3 force = (target - transform.position).normalized * ThrowStrenght;
+        LastGrabbed.AddForce(force, ForceMode.Impulse);
+        LastGrabbed.gameObject.layer = LastLayer;
         LastGrabbed = null;
+    }
+
+    public void StopReaching() {
+        if (Reaching) Reaching = false;
     }
 
     public void Grab(Rigidbody grabbedBody) {
         if (LastGrabbed || !grabbedBody) return;
         LastGrabbed = grabbedBody;
         FixedJoint joint = grabbedBody.gameObject.AddComponent<FixedJoint>();
+        LastLayer = grabbedBody.gameObject.layer;
+        grabbedBody.gameObject.layer = gameObject.layer;
         joint.connectedBody = Body;
 
         /*grabbedBody.isKinematic = true;
