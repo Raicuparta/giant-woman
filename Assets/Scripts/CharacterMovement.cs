@@ -14,9 +14,9 @@ public class CharacterMovement : MonoBehaviour {
 
     void Start() {
         Body = GetComponent<Rigidbody>();
-        Body.centerOfMass = transform.up * CenterOfMassY;
         CharacterSteps = GetComponent<Steps>();
         ColliderBase = GetComponent<SphereCollider>();
+        Body.centerOfMass = ColliderBase.center + Vector3.up * CenterOfMassY;
         DefaultBaseY = ColliderBase.center.y;
     }
 	
