@@ -39,8 +39,8 @@ public class Hands : MonoBehaviour {
 
         // rotate the body if the object we wanna grab is too low
         if (transform.position.y + MinGrabHeight > point.y) {
-            Vector3 forward = point - (ParentBody.position + Vector3.up * 5);
-            Quaternion target = Quaternion.LookRotation(Vector3.down, transform.up);
+            Vector3 forward = point - (ParentBody.position);
+            Quaternion target = Quaternion.LookRotation(forward, transform.up);
             Quaternion rotation = Quaternion.RotateTowards(ParentBody.rotation, target, LoweringSpeed);
             ParentBody.MoveRotation(rotation);
         }
