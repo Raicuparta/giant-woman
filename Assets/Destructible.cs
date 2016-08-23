@@ -13,9 +13,7 @@ public class Destructible : MonoBehaviour {
         }
     }
 
-    void OnCollisionEnter(Collision col) {
-        if (col.gameObject.layer == 11) return;
-
+    public void Destroy() {
         GetComponent<MeshCollider>().enabled = false;
         GetComponent<MeshRenderer>().enabled = false;
         GetComponent<Rigidbody>().isKinematic = true;
@@ -23,5 +21,17 @@ public class Destructible : MonoBehaviour {
         foreach (Transform child in transform) {
             child.gameObject.SetActive(true);
         }
+    }
+
+    void OnCollisionEnter(Collision col) {
+        /*if (col.gameObject.layer == 11) return;
+
+        GetComponent<MeshCollider>().enabled = false;
+        GetComponent<MeshRenderer>().enabled = false;
+        GetComponent<Rigidbody>().isKinematic = true;
+
+        foreach (Transform child in transform) {
+            child.gameObject.SetActive(true);
+        }*/
     }
 }

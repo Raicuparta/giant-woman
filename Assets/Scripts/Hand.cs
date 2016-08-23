@@ -3,15 +3,30 @@ using System.Collections;
 
 public class Hand : MonoBehaviour {
     Rigidbody Body;
-    Rigidbody LastGrabbed;
-    Transform LastParent;
+    Rigidbody GrabbedBody;
+    Destructible GrabbedDestructible;
     int LastLayer;
     bool Reaching;
+    float MaxArmLength;
     [HideInInspector] public float Speed = 10;
     [HideInInspector] public float ThrowStrenght = 30;
-    void Start () {
+    void Start() {
         Body = GetComponent<Rigidbody>();
-	}
+        MaxArmLength = Vector3.Distance(transform.parent.position, transform.position);
+    }
+
+    void Update() {
+        PullDestructible();
+    }
+
+    void PullDestructible() {
+        if (!GrabbedDestructible || !GrabbedBody) return;
+        float distance = Vector3.Distance(transform.parent.position, transform.position);
+        if (distance > MaxArmLength) {
+            GrabbedDestructible.Destroy();
+            LetGo();
+        }
+    }
 
     void OnCollisionEnter(Collision collision) {
         if (!Reaching) return;
@@ -19,20 +34,25 @@ public class Hand : MonoBehaviour {
     }
 
     public void Reach(Vector3 point) {
-        if (LastGrabbed) return;
+        if (GrabbedBody) return;
         if (!Reaching) Reaching = true;
         Body.velocity = (point - transform.position).normalized * Speed;
         //Body.AddForce((point - transform.position).normalized * Speed);
     }
 
+    public void LetGo() {
+        StopReaching();
+        if (!GrabbedBody) return;
+        Destroy(GrabbedBody.GetComponent<FixedJoint>());
+        GrabbedBody.gameObject.layer = LastLayer;
+        GrabbedBody = null;
+    }
+
     public void ThrowTowards(Vector3 target) {
-        if (Reaching) Reaching = false;
-        if (!LastGrabbed) return;
-        Destroy(LastGrabbed.GetComponent<FixedJoint>());
+        if (!GrabbedBody) return;
         Vector3 force = (target - transform.position).normalized * ThrowStrenght;
-        LastGrabbed.AddForce(force, ForceMode.Impulse);
-        LastGrabbed.gameObject.layer = LastLayer;
-        LastGrabbed = null;
+        GrabbedBody.AddForce(force, ForceMode.Impulse);
+        LetGo();
     }
 
     public void StopReaching() {
@@ -40,8 +60,9 @@ public class Hand : MonoBehaviour {
     }
 
     public void Grab(Rigidbody grabbedBody) {
-        if (LastGrabbed || !grabbedBody) return;
-        LastGrabbed = grabbedBody;
+        if (GrabbedBody || !grabbedBody) return;
+        GrabbedBody = grabbedBody;
+        GrabbedDestructible = grabbedBody.GetComponent<Destructible>();
         FixedJoint joint = grabbedBody.gameObject.AddComponent<FixedJoint>();
         LastLayer = grabbedBody.gameObject.layer;
         grabbedBody.gameObject.layer = gameObject.layer;
