@@ -14,7 +14,7 @@ public class FollowPath : MonoBehaviour {
 	
 	void FixedUpdate() {
         Road road = GetCurrentRoad();
-        if (road != CurrentRoad) {
+        if (road != CurrentRoad && road != null) {
             CurrentRoad = road;
             Target = PickTarget();
         }
@@ -34,11 +34,11 @@ public class FollowPath : MonoBehaviour {
 
         List<Vector3> targets = new List<Vector3>();
         foreach (Vector3 connection in CurrentRoad.Connections) {
-            bool inFront = Util.IsInFront(connection, transform.position - transform.forward, transform.forward);
+            bool inFront = Util.IsInFront(connection, transform.position - transform.forward * 2, transform.forward);
             if (inFront) targets.Add(connection);
         }
         
-        int index = Random.Range(0, targets.Count - 1);
+        int index = Random.Range(0, targets.Count);
         return targets[index];
     }
 
