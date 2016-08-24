@@ -6,7 +6,9 @@ public class FollowPath : MonoBehaviour {
     public float Speed = 5;
     Rigidbody Body;
     Road CurrentRoad;
+    bool Grounded;
     public Vector3 Target;
+    float MaxGroundDistance = 0.5f;
 
 	void Start() {
         Body = GetComponent<Rigidbody>();
@@ -18,12 +20,13 @@ public class FollowPath : MonoBehaviour {
             CurrentRoad = road;
             Target = PickTarget();
         }
-        MoveTowardsTarget();
+        if (Grounded) MoveTowardsTarget();
 	}
 
     void MoveTowardsTarget() {
         Vector3 forward = Vector3.ProjectOnPlane((Target - transform.position), Vector3.up);
         Body.velocity = forward.normalized * Speed;
+        //Body.AddForce(forward.normalized )
         Body.MoveRotation(Quaternion.LookRotation(forward));
     }
 
@@ -37,7 +40,6 @@ public class FollowPath : MonoBehaviour {
             bool inFront = Util.IsInFront(connection, transform.position - transform.forward * 2, transform.forward);
             if (inFront) targets.Add(connection);
         }
-        
         int index = Random.Range(0, targets.Count);
         return targets[index];
     }
@@ -47,8 +49,9 @@ public class FollowPath : MonoBehaviour {
         RaycastHit hit;
         Vector3 origin = transform.position;
         Vector3 direction = -transform.up;
-        bool ray = Physics.Raycast(origin, direction, out hit);
-        if (!ray) return null;
+        Grounded = Physics.Raycast(origin, direction, out hit, MaxGroundDistance);
+        Debug.DrawLine(origin, origin + direction * MaxGroundDistance);
+        if (!Grounded) return null;
         return hit.transform.GetComponent<Road>();
     }
 }
