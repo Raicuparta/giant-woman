@@ -1,69 +1,54 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class FollowPath : MonoBehaviour {
     public float Speed = 5;
-    public Transform Lookahead; // used to see where we're going
-    int Index = 0;
     Rigidbody Body;
+    Road CurrentRoad;
+    public Vector3 Target;
 
-    bool LastRight;
-    bool LastLeft;
-
-	void Start () {
+	void Start() {
         Body = GetComponent<Rigidbody>();
 	}
 	
 	void FixedUpdate() {
-
-        bool roadForward = CheckIfRoad(transform.forward);
-        bool roadRight = CheckIfRoad(transform.right);
-        bool roadLeft = CheckIfRoad(-transform.right);
-
-        if (!roadForward) Turn();
-        else if (roadRight && roadRight != LastRight) MaybeTurn(true);
-        else if (roadLeft && roadLeft != LastLeft) MaybeTurn(false);
-
-        LastRight = roadRight;
-        LastLeft = roadLeft;
-
-        Vector3 forward = Vector3.ProjectOnPlane(transform.forward, Vector3.up);
-        Body.velocity = forward * Speed;
-        Vector3 position = transform.position;
-        position.y = 1;
-        Body.MovePosition(position);
+        Road road = GetCurrentRoad();
+        if (road != CurrentRoad) {
+            CurrentRoad = road;
+            Target = PickTarget();
+        }
+        MoveTowardsTarget();
 	}
 
-    // checks if there is road in a given direction
-    bool CheckIfRoad(Vector3 direction) {
-        RaycastHit hit;
-        Vector3 origin = Lookahead.position;
-        float slope = 3;
-        Vector3 forward = -transform.up + direction * slope;
-        bool ray = Physics.Raycast(origin, forward, out hit);
-        Debug.DrawLine(origin, origin + forward * 5);
-        return ray && (hit.transform.tag == "Road");
+    void MoveTowardsTarget() {
+        Vector3 forward = Vector3.ProjectOnPlane((Target - transform.position), Vector3.up);
+        Body.velocity = forward.normalized * Speed;
+        Body.MoveRotation(Quaternion.LookRotation(forward));
     }
 
-    void MaybeTurn(bool right) {
-        float random = Random.value;
-        Debug.Log("maybe turn?");
-        if (random < 0.5) {
-            Debug.Log("maybe turned!");
-            Turn(right ? 90 : -90);
+    // pick one of the connections randomly
+    Vector3 PickTarget() {
+        List<Vector3> connections = CurrentRoad.Connections;
+        if (connections.Count == 1) return CurrentRoad.Connections[0];
+
+        List<Vector3> targets = new List<Vector3>();
+        foreach (Vector3 connection in CurrentRoad.Connections) {
+            bool inFront = Util.IsInFront(connection, transform.position - transform.forward, transform.forward);
+            if (inFront) targets.Add(connection);
         }
+        
+        int index = Random.Range(0, targets.Count - 1);
+        return targets[index];
     }
 
-    void Turn(float degrees) {
-        Debug.Log("turned");
-        float rotY = Body.transform.eulerAngles.y;
-        Body.MoveRotation(Quaternion.Euler(0, rotY + degrees, 0));
-    }
-
-    void Turn() {
-        float rotY = Body.transform.eulerAngles.y;
-        float random = Random.value;
-        int direction = random > 0.5 ? 1 : -1;
-        Turn(90 * direction);
+    // get the road that's currently under the car
+    Road GetCurrentRoad() {
+        RaycastHit hit;
+        Vector3 origin = transform.position;
+        Vector3 direction = -transform.up;
+        bool ray = Physics.Raycast(origin, direction, out hit);
+        if (!ray) return null;
+        return hit.transform.GetComponent<Road>();
     }
 }
