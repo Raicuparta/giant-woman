@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class Road : MonoBehaviour {
     public List<Vector3> Connections; // road cells that connect to this one
+    public LayerMask RoadLayers;
 
     void Start () {
         Connections = new List<Vector3>();
@@ -18,7 +19,7 @@ public class Road : MonoBehaviour {
         float slope = 2;
         Vector3 origin = transform.position + Vector3.up * 4;
         Vector3 forward = -transform.up + direction * slope;
-        bool ray = Physics.Raycast(origin, forward, out hit);
+        bool ray = Physics.Raycast(origin, forward, out hit, 20, RoadLayers);
         Debug.DrawLine(origin, origin + forward * 5);
         if (ray && (hit.transform.tag == "Road")) {
             Connections.Add(hit.transform.position);
