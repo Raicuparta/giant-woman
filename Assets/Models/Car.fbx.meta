@@ -9,19 +9,29 @@ ModelImporter:
     100002: CarBody
     100004: Cylinder
     100006: Wheel
+    100008: Lights
+    100010: Windows
     400000: //RootNode
     400002: CarBody
     400004: Cylinder
     400006: Wheel
+    400008: Lights
+    400010: Windows
     2300000: CarBody
     2300002: Cylinder
     2300004: Wheel
+    2300006: Lights
+    2300008: Windows
     3300000: CarBody
     3300002: Cylinder
     3300004: Wheel
+    3300006: Lights
+    3300008: Windows
     4300000: Cylinder
     4300002: CarBody
     4300004: Wheel
+    4300006: Lights
+    4300008: Windows
   materials:
     importMaterials: 1
     materialName: 0
@@ -64,7 +74,7 @@ ModelImporter:
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
-    tangentImportMode: 3
+    tangentImportMode: 0
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
