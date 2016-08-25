@@ -33,7 +33,6 @@ public class FollowPath : MonoBehaviour {
         Debug.DrawLine(transform.position, transform.position + transform.forward * 2);
         Quaternion rotation;
         if (targetBehind) {
-            Debug.Log("target behind");
             Vector3 angle = transform.eulerAngles;
             angle.y -= RotationSpeed;
             //Body.MovePosition(transform.position + transform.forward * 0.3f);
