@@ -5,6 +5,8 @@ public class Steps : MonoBehaviour {
     public float KneeSpeed = 20;
     public float Stride = 10; // step distance
     public float Width = 2; // lateral distance between the feet
+    float GroundRayHeight = 7;
+    public LayerMask GroundLayers;
     public Knee RightKnee;
     public Knee LeftKnee;
     public Foot RightFoot;
@@ -25,15 +27,18 @@ public class Steps : MonoBehaviour {
         LeftFoot.Knee = LeftKnee.transform;
     }
 
-    public void Move(float h) {
-        RightKnee.Move();
-        LeftKnee.Move();
+    public void Move() {
+        // check if grounded
+        bool grounded = Physics.Raycast(transform.position, Vector3.down, GroundRayHeight, GroundLayers);
+        Debug.DrawLine(transform.position, transform.position + Vector3.down * GroundRayHeight, Color.blue);
 
-        /*Transform foot = RightKnee.Anchored ? RightFoot.transform : LeftFoot.transform;
-
-        Rigidbody Body = transform.GetComponent<Rigidbody>();
-        Quaternion q = Quaternion.AngleAxis(h, Vector3.up);
-        Body.MovePosition(q * (Body.transform.position - foot.position) + foot.position);
-        Body.MoveRotation(Body.transform.rotation * q);*/
+        if (grounded) {
+            if (!RightKnee.Anchored && !LeftKnee.Anchored) RightKnee.Anchor();
+            RightKnee.Move();
+            LeftKnee.Move();
+        } else {
+            RightKnee.Release();
+            LeftKnee.Release();
+        }
     }
 }

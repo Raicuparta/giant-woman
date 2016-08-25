@@ -18,7 +18,6 @@ public class RandomizeColor : MonoBehaviour {
 	}
 
     void Randomize(Material material) {
-        Debug.Log("randomize");
         float r = Random.value;
         float g = Random.value;
         float b = Random.value;

@@ -27,9 +27,13 @@ public class CharacterMovement : MonoBehaviour {
         Body.AddForce(forwardForce);
 
         // use h for y rotation
-        Vector3 torque = Vector3.up * h * RotationSpeed;
-        Body.AddTorque(torque);
-        CharacterSteps.Move(h * RotationSpeed);
+        Vector3 angle = transform.eulerAngles;
+        angle.y += RotationSpeed * h;
+        Quaternion rotation = Quaternion.Euler(angle);
+        Body.MoveRotation(rotation);
+
+        // animate the legs
+        CharacterSteps.Move();
     }
 
     public void ChargeJump() {

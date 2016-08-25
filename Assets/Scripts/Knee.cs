@@ -7,7 +7,7 @@ public class Knee : MonoBehaviour {
     [HideInInspector] public float Width = 2; // lateral distance between the feet
     [HideInInspector] public bool Anchored; // if the foot is currently stuck to the ground
     [HideInInspector] public Knee OtherFoot;
-    Rigidbody Foot;
+    Rigidbody Body;
     Transform Parent;
     Rigidbody ParentBody;
     AudioSource StepSound;
@@ -15,9 +15,9 @@ public class Knee : MonoBehaviour {
     float InitialY;
 
 	void Start () {
-        Foot = GetComponent<Rigidbody>();
+        Body = GetComponent<Rigidbody>();
         InitialY = transform.position.y;
-        Outwards = transform.position.x > 0 ? -1 : 1;
+        Outwards = transform.localPosition.x > 0 ? -1 : 1;
 
         // we're gonna change the hierarchy so we need to save the parent
         Parent = transform.parent;
@@ -37,7 +37,7 @@ public class Knee : MonoBehaviour {
         // Move the foot by applying a force towards the target
         float intensity = ComputeForwardVelocity().magnitude * Speed;
         Vector3 force = Util.ForceTowards(transform.position, ComputeTarget(), intensity);
-        Foot.AddForce(force);
+        Body.AddForce(force);
         // The velocity needs to be more than twice the parent to make sure the feet
         // can keep up.
         //Foot.velocity.Normalize();
@@ -53,8 +53,8 @@ public class Knee : MonoBehaviour {
         Vector3 difference = OtherFoot.transform.position - transform.position;
         //difference = Vector3.ProjectOnPlane(difference, Parent.right);
         float distance = difference.magnitude;
-        bool result = distance > Stride/* ||
-            Util.IsInFront(transform.position, Parent.position, Parent.right * -Outwards)*/;
+        bool result = distance > Stride ||
+            Util.IsInFront(transform.position, OtherFoot.transform.position, Parent.right * Outwards);
         return result && IsInFront();
     }
 
@@ -83,8 +83,8 @@ public class Knee : MonoBehaviour {
         return Util.IsInFront(transform.position, OtherFoot.transform.position, ComputeForward());
     }
 
-    void Anchor () {
-        Foot.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+    public void Anchor () {
+        Body.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
         Anchored = true;
         float pitchDelta = Random.Range(0.8f, 1.2f);
         StepSound.pitch = pitchDelta;
@@ -92,7 +92,7 @@ public class Knee : MonoBehaviour {
     }
 
     public void Release () {
-        Foot.constraints = RigidbodyConstraints.None;
+        Body.constraints = RigidbodyConstraints.None;
         Anchored = false;
     }
 }
