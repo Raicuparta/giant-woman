@@ -9,9 +9,11 @@ public class FollowPath : MonoBehaviour {
     bool Grounded;
     public Vector3 Target;
     float MaxGroundDistance = 0.5f;
+    float RotationSpeed = 10;
 
 	void Start() {
         Body = GetComponent<Rigidbody>();
+        Body.centerOfMass = Vector3.down;
 	}
 	
 	void FixedUpdate() {
@@ -27,7 +29,20 @@ public class FollowPath : MonoBehaviour {
         Vector3 forward = Vector3.ProjectOnPlane((Target - transform.position), Vector3.up);
         Body.velocity = forward.normalized * Speed;
         //Body.AddForce(forward.normalized )
-        Body.MoveRotation(Quaternion.LookRotation(forward));
+        bool targetBehind = Util.IsInFront(transform.position + transform.forward * 2, Target, transform.forward);
+        Debug.DrawLine(transform.position, transform.position + transform.forward * 2);
+        Quaternion rotation;
+        if (targetBehind) {
+            Debug.Log("target behind");
+            Vector3 angle = transform.eulerAngles;
+            angle.y -= RotationSpeed;
+            //Body.MovePosition(transform.position + transform.forward * 0.3f);
+            Body.velocity = Vector3.zero;
+            rotation = Quaternion.Euler(angle);
+        } else {
+            rotation = Quaternion.RotateTowards(Body.rotation, Quaternion.LookRotation(forward), RotationSpeed);
+        }
+        Body.MoveRotation(rotation);
     }
 
     // pick one of the connections randomly
