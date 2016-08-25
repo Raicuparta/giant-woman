@@ -12,11 +12,6 @@ public class Person : MonoBehaviour {
 	void Start() {
         Body = GetComponent<Rigidbody>();
         InvokeRepeating("ChangeDirection", 0, RotationInterval);
-        foreach (Material mat in BodyRenderer.materials) {
-            if (mat.name == "Sin (Instance)") continue; // TODO ugly code here
-            Util.ChangeColorRandom(mat);
-        }
-
     }
 
     void ChangeDirection() {
