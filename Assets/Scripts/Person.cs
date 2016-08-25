@@ -3,14 +3,20 @@ using System.Collections;
 
 public class Person : MonoBehaviour {
     Rigidbody Body;
+    Quaternion TargetRotation;
+    public Renderer BodyRenderer;
     public float Speed = 5;
     public float RotationInterval = 3; // how long to wait before changing direction
     public float RotationSpeed = 5;
-    Quaternion TargetRotation;
 
 	void Start() {
         Body = GetComponent<Rigidbody>();
         InvokeRepeating("ChangeDirection", 0, RotationInterval);
+        foreach (Material mat in BodyRenderer.materials) {
+            if (mat.name == "Sin (Instance)") continue; // TODO ugly code here
+            Util.ChangeColorRandom(mat);
+        }
+
     }
 
     void ChangeDirection() {

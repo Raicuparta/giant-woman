@@ -22,7 +22,7 @@ public class Hands : MonoBehaviour {
     Vector3 MouseToWorld(Vector3 mouse) {
         Ray ray = GameCamera.ScreenPointToRay(mouse);
         RaycastHit hitInfo;
-        bool hit = Physics.Raycast(ray, out hitInfo, MaxGrabDistance, GrabbableLayers.value);
+        Physics.Raycast(ray, out hitInfo, MaxGrabDistance, GrabbableLayers.value);
         Debug.DrawLine(transform.position, hitInfo.point, Color.blue);
         return hitInfo.point;
     }
