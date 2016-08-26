@@ -9,6 +9,7 @@ public class Hands : MonoBehaviour {
     public Hand RightHand;
     public Hand LeftHand;
     public Camera GameCamera;
+    CameraController GameCameraController;
     public LayerMask GrabbableLayers;
     Rigidbody ParentBody;
 
@@ -16,6 +17,7 @@ public class Hands : MonoBehaviour {
         RightHand.Speed = Speed;
         LeftHand.Speed = Speed;
         ParentBody = GetComponent<Rigidbody>();
+        GameCameraController = GameCamera.transform.GetComponent<CameraController>();
     }
 
     // convert mouse coordinate to 3D world coordinates
@@ -28,6 +30,10 @@ public class Hands : MonoBehaviour {
     }
 
     public void Grab(bool right, bool left, Vector3 mouse) {
+        // stop camera while clicking the screen
+        if (right || left) GameCameraController.enabled = false;
+        else GameCameraController.enabled = true;
+
         Vector3 point = MouseToWorld(mouse);
         // Grab that object
         if (right) RightHand.Reach(point);
@@ -38,12 +44,10 @@ public class Hands : MonoBehaviour {
         if (!right && !left) return;
 
         // rotate the body if the object we wanna grab is too low
-        if (transform.position.y + MinGrabHeight > point.y) {
-            Vector3 forward = point - (ParentBody.position);
-            Quaternion target = Quaternion.LookRotation(forward, transform.up);
-            Quaternion rotation = Quaternion.RotateTowards(ParentBody.rotation, target, LoweringSpeed);
-            ParentBody.MoveRotation(rotation);
-        }
+        Vector3 forward = point - (ParentBody.position);
+        Quaternion target = Quaternion.LookRotation(forward, Vector3.up);
+        Quaternion rotation = Quaternion.RotateTowards(ParentBody.rotation, target, LoweringSpeed);
+        ParentBody.MoveRotation(rotation);
     }
 
     public void Press(bool right, bool left, Vector3 mouse) {

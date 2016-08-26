@@ -11,27 +11,37 @@ ModelImporter:
     100006: Wheel
     100008: Lights
     100010: Windows
+    100012: WindowsBool
+    100014: WheelPlate
     400000: //RootNode
     400002: CarBody
     400004: Cylinder
     400006: Wheel
     400008: Lights
     400010: Windows
+    400012: WindowsBool
+    400014: WheelPlate
     2300000: CarBody
     2300002: Cylinder
     2300004: Wheel
     2300006: Lights
     2300008: Windows
+    2300010: WindowsBool
+    2300012: WheelPlate
     3300000: CarBody
     3300002: Cylinder
     3300004: Wheel
     3300006: Lights
     3300008: Windows
+    3300010: WindowsBool
+    3300012: WheelPlate
     4300000: Cylinder
     4300002: CarBody
     4300004: Wheel
     4300006: Lights
     4300008: Windows
+    4300010: WindowsBool
+    4300012: WheelPlate
   materials:
     importMaterials: 1
     materialName: 0
@@ -72,7 +82,7 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 60
+    normalSmoothAngle: 180
     normalImportMode: 0
     tangentImportMode: 0
   importAnimation: 1
