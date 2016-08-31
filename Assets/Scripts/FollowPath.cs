@@ -9,8 +9,8 @@ public class FollowPath : Grabbable {
     bool Grounded;
     public Vector3 Target;
     float MaxGroundDistance = 0.5f;
-    float RotationSpeed = 10;
-    float LaneWidth = 2;
+    float RotationSpeed = 150;
+    float LaneWidth = 2.5f;
 
 	void Start() {
         Body = GetComponent<Rigidbody>();
@@ -28,22 +28,20 @@ public class FollowPath : Grabbable {
 
     void MoveTowardsTarget() {
         Vector3 target = Target + transform.right * LaneWidth;
-        Vector3 forward = Vector3.ProjectOnPlane((target - transform.position), Vector3.up);
-        //Body.velocity = forward.normalized * Speed;
-        Body.AddForce(forward.normalized * Speed, ForceMode.VelocityChange);
+        Vector3 targetDirection;
+        Vector3 forward;
+
         bool targetBehind = Util.IsInFront(transform.position + transform.forward * 2, target, transform.forward);
-        Debug.DrawLine(transform.position, transform.position + transform.forward * 2);
-        Quaternion rotation;
         if (targetBehind) {
-            Vector3 angle = transform.eulerAngles;
-            angle.y -= RotationSpeed;
-            //Body.MovePosition(transform.position + transform.forward * 0.3f);
-            Body.velocity = Vector3.zero;
-            rotation = Quaternion.Euler(angle);
+            forward = Vector3.ProjectOnPlane(transform.forward, Vector3.up);
+            targetDirection = -transform.right;
         } else {
-            rotation = Quaternion.RotateTowards(Body.rotation, Quaternion.LookRotation(forward), RotationSpeed);
+            targetDirection = Vector3.ProjectOnPlane((target - transform.position), Vector3.up);
+            forward = targetDirection;
         }
-        Body.MoveRotation(rotation);
+        Body.AddForce(forward.normalized * Speed, ForceMode.VelocityChange);
+        Body.angularVelocity = Vector3.zero;
+        Body.AddTorque(Vector3.Cross(transform.forward, targetDirection).normalized * RotationSpeed, ForceMode.Acceleration);
     }
 
     // pick one of the connections randomly
