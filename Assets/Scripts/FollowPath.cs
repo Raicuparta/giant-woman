@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class FollowPath : MonoBehaviour {
+public class FollowPath : Grabbable {
     public float Speed = 5;
     Rigidbody Body;
     Road CurrentRoad;
@@ -10,6 +10,7 @@ public class FollowPath : MonoBehaviour {
     public Vector3 Target;
     float MaxGroundDistance = 0.5f;
     float RotationSpeed = 10;
+    float LaneWidth = 2;
 
 	void Start() {
         Body = GetComponent<Rigidbody>();
@@ -26,10 +27,11 @@ public class FollowPath : MonoBehaviour {
 	}
 
     void MoveTowardsTarget() {
-        Vector3 forward = Vector3.ProjectOnPlane((Target - transform.position), Vector3.up);
-        Body.velocity = forward.normalized * Speed;
-        //Body.AddForce(forward.normalized )
-        bool targetBehind = Util.IsInFront(transform.position + transform.forward * 2, Target, transform.forward);
+        Vector3 target = Target + transform.right * LaneWidth;
+        Vector3 forward = Vector3.ProjectOnPlane((target - transform.position), Vector3.up);
+        //Body.velocity = forward.normalized * Speed;
+        Body.AddForce(forward.normalized * Speed, ForceMode.VelocityChange);
+        bool targetBehind = Util.IsInFront(transform.position + transform.forward * 2, target, transform.forward);
         Debug.DrawLine(transform.position, transform.position + transform.forward * 2);
         Quaternion rotation;
         if (targetBehind) {
@@ -67,5 +69,9 @@ public class FollowPath : MonoBehaviour {
         Debug.DrawLine(origin, origin + direction * MaxGroundDistance);
         if (!Grounded) return null;
         return hit.transform.GetComponent<Road>();
+    }
+
+    public override void Grab() {
+        // TODO
     }
 }

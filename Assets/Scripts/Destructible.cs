@@ -3,7 +3,7 @@ using System.Collections;
 
 [RequireComponent (typeof (Rigidbody))]
 [RequireComponent (typeof (MeshCollider))]
-public class Destructible : MonoBehaviour {
+public class Destructible : Grabbable {
     Destructible Bellow; // building under this one, if any
     public float DownRayHeight = 6; // size of the ray that checks if there's another building bellow
     [HideInInspector] public bool Destroyed;
@@ -55,5 +55,9 @@ public class Destructible : MonoBehaviour {
         foreach (Transform child in transform) {
             child.gameObject.SetActive(true);
         }*/
+    }
+
+    public override void Grab() {
+        // TODO
     }
 }

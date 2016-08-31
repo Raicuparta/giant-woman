@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Person : MonoBehaviour {
+public class Person : Grabbable {
     Rigidbody Body;
     Quaternion TargetRotation;
     public Renderer BodyRenderer;
@@ -24,4 +24,8 @@ public class Person : MonoBehaviour {
         Quaternion rotation = Quaternion.RotateTowards(transform.rotation, TargetRotation, RotationSpeed);
         Body.MoveRotation(rotation);
 	}
+
+    public override void Grab() {
+        // TODO
+    }
 }
