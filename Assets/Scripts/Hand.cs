@@ -65,7 +65,7 @@ public class Hand : MonoBehaviour {
         GrabbedDestructible = grabbedBody.GetComponent<Destructible>();
         FixedJoint joint = grabbedBody.gameObject.AddComponent<FixedJoint>();
         LastLayer = grabbedBody.gameObject.layer;
-        grabbedBody.gameObject.layer = gameObject.layer;
+        //grabbedBody.gameObject.layer = gameObject.layer;
         joint.connectedBody = Body;
 
         /*grabbedBody.isKinematic = true;
